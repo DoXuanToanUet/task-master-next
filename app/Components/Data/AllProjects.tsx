@@ -35,7 +35,7 @@ export const projectsData: Project[] = [
       tasks: [
          {
             id: uuidv4(),
-            title: "reactjs",
+            title: "Create a the UI of the task",
             icon: 'Code',
             projectName: 'React',
             status: "In Progress",
@@ -45,7 +45,37 @@ export const projectsData: Project[] = [
          },
          {
             id: uuidv4(),
-            title: "next js",
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "Completed",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "Completed",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "Completed",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
             icon: 'Code',
             projectName: 'React',
             status: "Completed",
@@ -53,6 +83,58 @@ export const projectsData: Project[] = [
             createdAt: "2024-8-26T10:00:00Z",
             updatedAt: "2024-8-26T10:00:00Z"
          }
+      ]
+   
+   },
+   {
+      id: uuidv4(),
+      clerkUserId: '123',
+      title: 'Project title2',
+      createdAt: "2024-8-26T10:00:00Z",
+      updatedAt: "2024-8-26T10:00:00Z",
+      icon: "AddIcon",
+      tasks: [
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task",
+            icon: 'Code',
+            projectName: 'React',
+            status: "In Progress",
+            priority: "Low",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "In Progress",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "In Progress",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         {
+            id: uuidv4(),
+            title: "Create a the UI of the task the task offline",
+            icon: 'Code',
+            projectName: 'React',
+            status: "Completed",
+            priority: "High",
+            createdAt: "2024-8-26T10:00:00Z",
+            updatedAt: "2024-8-26T10:00:00Z"
+         },
+         
       ]
    
    }

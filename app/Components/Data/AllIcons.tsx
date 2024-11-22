@@ -3,6 +3,7 @@ import { IconData } from "@/app/types/AppType";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks"
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import AddIcon from '@mui/icons-material/Add';
+import ListIcon from '@mui/icons-material/List';
 import { useEffect } from "react";
 export const allIconsArray: IconData[]=[
    {
@@ -21,6 +22,12 @@ export const allIconsArray: IconData[]=[
       id:3,
       icon:<AddIcon/>,
       name: 'AddIcon',
+      isSelected:false
+   },
+   {
+      id:4,
+      icon:<ListIcon/>,
+      name: 'ListIcon',
       isSelected:false
    }
 ]

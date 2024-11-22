@@ -1,13 +1,18 @@
 'use client'
-import React from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import CloseOutlinedICon from "@mui/icons-material/CloseOutlined"
 import BorderAllICon from "@mui/icons-material/BorderAll"
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks"
 import { useContextApp } from '@/app/Pages/contextApp'
-import { useForm, SubmitHandler, UseFormRegister, FieldError, FieldErrors } from "react-hook-form"
+import { useForm, SubmitHandler, UseFormRegister, FieldError, FieldErrors, set } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from "zod"
 import { getIconComponent } from '../functions/IconsActions'
+import AllProjects from '@/app/Pages/AllProjects/AllProjects'
+import { addNewProject, editProject } from '../functions/projectsActions'
+import toast from 'react-hot-toast'
+import { allIconsArray } from '../Data/AllIcons'
+import { ElevatorSharp } from '@mui/icons-material'
 const schema = z.object({
    projectName: z
    .string()
@@ -15,30 +20,120 @@ const schema = z.object({
    .max(30, {message: "Project name must be 30 characters or less"})
 })
 
-type FormData = z.infer<typeof schema>
+export type FormData = z.infer<typeof schema>
 const Modal = () => {
    const {  
-      modelObject: { openModal, setOpenModal}
+      modelObject: { openModal, setOpenModal},
+      allProjectsObject: { allProjects, setAllProjects},
+      selectedIconObject: { selectedIcon, setSelectedIcon},
+      selectedProjectObject:{selectedProject, setSelectedProject},
     } = useContextApp()
+    const [isLoading, setLoading] = useState(false)
    const {
       register,
       handleSubmit,
       setValue,
       formState: {errors},
+      setError,
+      setFocus,
       reset
    } = useForm<FormData>({
       resolver: zodResolver(schema)
    })
 
-   const onSubmit: SubmitHandler<FormData> = (data) =>{
-      console.log("Form submitted with data", data)
-      handleClose();
+   const onSubmit: SubmitHandler<FormData> = (data: FormData) =>{
+
+      // Check if the project already exists
+      const existingProject = allProjects.find(
+         (project) => project.title.toLowerCase() === data.projectName.toLowerCase()
+      )
+      console.log("existingProject",existingProject);   
+      // if exist return an error
+      if (existingProject){
+         setError('projectName',{
+            type:'manual',
+            message: 'Project already exists'
+         })
+         setFocus('projectName')
+      }else{
+         // Call addNewProject function, if everthing is valid
+         // addNewProject(
+         //    data,
+         //    allProjects,
+         //    setAllProjects,
+         //    setOpenModal,
+         //    selectedIcon,
+         //    reset
+         // )
+         // toast.success('Add new project Success')
+         // console.log("Form submitted with data", data)
+         addFun(data)
+         // handleClose();
+      }
+     
+   }
+   async function addFun(data: FormData){
+      try {
+         setLoading(true)
+         
+         await new Promise( (resolve) => setTimeout(resolve,1000) )
+         if(!selectedProject){
+            addNewProject(
+               data,
+               allProjects,
+               setAllProjects,
+               setOpenModal,
+               selectedIcon,
+               reset
+            )
+         }else{
+            editProject(
+               data,
+               selectedProject,
+               selectedIcon,
+               setSelectedProject,
+               allProjects,
+               setAllProjects,
+               setOpenModal
+               
+            )
+         }
+         
+      } catch (error) {
+         console.log(error);
+         toast.error('Something went wrong')
+      } finally{
+         setLoading(false)
+         toast.success(
+            `Project ${selectedProject ? 'Edited': "Added" } successfully`
+         )
+         setOpenModal(false)
+         
+      }
    }
    const handleClose =()=>{
       console.log("closing window and reseting form")
       setOpenModal(false)
       reset()
    }
+
+   // Reset the form when the opModal state change
+   useLayoutEffect(()=>{
+      if(openModal){
+         if(!selectedProject){
+            reset()
+         }else{
+            setValue('projectName', selectedProject.title)
+
+            const findIconAllIconArr = allIconsArray.find(
+               (icon) => icon.name === selectedProject.icon
+            )
+            if( findIconAllIconArr){
+               setSelectedIcon(findIconAllIconArr)
+            }
+         }
+      }
+   },[openModal,reset])
   return (
     <div className={`${openModal ? "block ": "hidden "} w-[48%] max-sm:w-[82%] max-[600px]:w-[93%] z-[90] p-3 top-[47%] left-[47%] -translate-y-1/2 -translate-x-1/2 absolute flex flex-col gap-3 border border-slate-50 bg-white rounded-lg shadow-md`}>
       <Header handleClose={handleClose}/>
@@ -49,22 +144,22 @@ const Modal = () => {
      
     </div>
   )
-}
-
-export default Modal
-
+  
 function Header( {handleClose}: {handleClose: ()=> void}){
    const {  
-      selectedIconObject: { selectedIcon, setSelectedIcon}
+      selectedIconObject: { selectedIcon, setSelectedIcon},
+      selectedProjectObject:{selectedProject, setSelectedProject},
     } = useContextApp()
-   console.log("header render")
+   // console.log("header render")
    return (
       <div className="flex justify-between items-center pt-7 px-7">
          <div className="flex items-center gap-2">
             <div className="p-[7px] bg-orange-200 rounded-lg flex items-center justify-center">
 
             </div>
-            <span className='font-semibold text-lg'>Add Project</span>
+            <span className='font-semibold text-lg'>
+               {selectedProject ? "Edit Project" : "New Project"}
+            </span>
          </div>
          <CloseOutlinedICon
             sx={{fontSize: "18px"}}
@@ -78,8 +173,6 @@ function Header( {handleClose}: {handleClose: ()=> void}){
       </div>
    )
 }
-
-
 function ProjectInput({
    register,
    errors
@@ -125,22 +218,32 @@ function ProjectInput({
    )
 }
 
-function Footer({handleClose}: {handleClose: ()=> void}){
+  function Footer({handleClose}: {handleClose: ()=> void}){
    const {  
-      modelObject: { openModal, setOpenModal}
+      modelObject: { openModal, setOpenModal},
+      selectedProjectObject:{selectedProject, setSelectedProject},
     } = useContextApp()
    return (
       <div className="w-full p-[12px] mt-8 mb-4 flex gap-3 justify-end items-center">
          <button 
-             onClick={ ()=> handleClose()}
+             onClick={ ()=> {
+               handleClose()
+               // setSel
+             }}
          className='border border-slate-200 text-slate-400 text-[13px] p-2 px-6 rounded-md hover:border-slate-300 transition-all'>
             Cancel
          </button>
          <button 
            type='submit'
          className='text-white bg-orange-600 text-[13px] p-2 px-6 rounded-md hover:bg-orange-700 transition-all'>
-            Add project
+            {isLoading ? "saving .. " : selectedProject ? "Edit Project" : "Add Project"}
          </button>
       </div>
    )
 }
+}
+
+export default Modal
+
+
+
