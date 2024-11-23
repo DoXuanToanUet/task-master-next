@@ -64,6 +64,8 @@ function ProjectCardHeader({ dayLeft }: { dayLeft: number }) {
       selectedProjectObject:{selectedProject, setSelectedProject},
       selectedIconObject: { selectedIcon, setSelectedIcon},
       modelObject: { openModal, setOpenModal},
+      chosenProjectObject: { chosenProject, setChosenProject },
+      sideBarMenuObject: { sideBarMenu, setSideBarMenu},
    } = useContextApp()
    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
    const open = Boolean(anchorEl);
@@ -90,9 +92,22 @@ function ProjectCardHeader({ dayLeft }: { dayLeft: number }) {
      setOpenConfirmModel(true)
      handleClose(); // Đóng menu sau khi xử lý
    };
+
    useEffect(() => {
       console.log("Selected Project changed:", selectedProject);
     }, [selectedProject]);
+    
+   function showAllTasksOfProject(){
+      setChosenProject(project)
+      setSideBarMenu( (preState)=>
+         preState.map( (item)=>(
+            {
+               ...item, isSelected: item.id ===2 ? true : false
+            }
+         ) )
+      )
+
+   }
    return (
      <div className="flex justify-between items-center">
        {/* Title and Icon */}
@@ -107,7 +122,10 @@ function ProjectCardHeader({ dayLeft }: { dayLeft: number }) {
                )}
          </div>
          <div className="flex flex-col">
-           <span className="font-semibold text-[19px]">{project.title}</span>
+           <span 
+            className="font-semibold text-[19px] hover:text-orange-600 cursor-pointer"
+            onClick={showAllTasksOfProject}
+           >{project.title}</span>
            <span className="text-slate-400 text-[13px]">{dayLeft} days ago</span>
          </div>
        </div>
@@ -147,6 +165,7 @@ function ProjectCardHeader({ dayLeft }: { dayLeft: number }) {
      </div>
    );
  }
+
 function ProjectCardBody(){
    return (
       <div className="h-[80px] flex flex-col gap-3 mb-1">

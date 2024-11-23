@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState, useSyncExternalStore  } from "react"
-import { AppType, IconData, SidebarMenuItem, SortingOption} from "../types/AppType"
+import { AppType, IconData, SidebarMenuItem, SortingOption, TabOption} from "../types/AppType"
 import { allIconsArray } from "../Components/Data/AllIcons"
 import { Project, projectsData} from "../Components/Data/AllProjects"
 import { resolve } from "path"
@@ -14,10 +14,12 @@ const defaultState: AppType = {
    allIconsDataObject: { allIconsData: [], setAllIconsData: () =>{}},
    openIconObject:{ openIcon: false, setOpenIcon: ()=>{}},
    selectedIconObject: { selectedIcon:null, setSelectedIcon:()=>{} },
+   chosenProjectObject: { chosenProject:null, setChosenProject:()=>{} },
    allProjectsObject: { allProjects: [], setAllProjects: ()=>{}},
    selectedProjectObject:{selectedProject: null, setSelectedProject: ()=>{}},
    openConfirmModelObject: {openConfirmModel: false, setOpenConfirmModel: ()=>{}},
-   sortingOptionObject: {sortingOptions: [], setSortingOptions:  ()=>{}}
+   sortingOptionObject: {sortingOptions: [], setSortingOptions:  ()=>{}},
+   tabOptionObject: { tabsOptions:[] , setTabsOptions: ()=>{}}
 }
 
 // Creating the context
@@ -36,7 +38,12 @@ export default function ContextAppProvider({
    const [selectedIcon, setSelectedIcon] = useState<IconData | null>(null)
    const [allProjects, setAllProjects]= useState<Project[]>([])
    const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+   const [chosenProject, setChosenProject] = useState<Project | null>(null)
    const [openConfirmModel, setOpenConfirmModel] = useState<boolean>(false)
+   const [tabsOptions, setTabsOptions] = useState<TabOption[]>([
+      {id: 1, name: "On Going Tasks", isSelected: true},
+      {id: 2, name: "Completed Tasks", isSelected: false},
+   ])
    const [sortingOptions, setSortingOptions] = useState<SortingOption[]>(
       [
          {
@@ -97,10 +104,12 @@ export default function ContextAppProvider({
                allIconsDataObject: { allIconsData, setAllIconsData},
                openIconObject:{ openIcon, setOpenIcon},
                selectedIconObject: { selectedIcon, setSelectedIcon},
+               chosenProjectObject: { chosenProject, setChosenProject },
                allProjectsObject: { allProjects, setAllProjects},
                selectedProjectObject:{selectedProject, setSelectedProject},
                openConfirmModelObject: {openConfirmModel, setOpenConfirmModel},
-               sortingOptionObject: {sortingOptions, setSortingOptions}
+               sortingOptionObject: {sortingOptions, setSortingOptions},
+               tabOptionObject: { tabsOptions , setTabsOptions}
             }}
          >
          {children}

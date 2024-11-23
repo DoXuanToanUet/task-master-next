@@ -19,6 +19,11 @@ export type SortingOption ={
       selected: boolean
    }[]
 }
+export type TabOption ={
+   id: number,
+   name: string,
+   isSelected: boolean
+}
 export type AppType={
    openSideBarObject:{
       openSideBar: boolean,
@@ -31,6 +36,8 @@ export type AppType={
    selectedIconObject: { selectedIcon: IconData | null, setSelectedIcon: React.Dispatch<React.SetStateAction<IconData | null>>},
    allProjectsObject: { allProjects: Project[], setAllProjects: React.Dispatch<React.SetStateAction<Project[]>>}
    selectedProjectObject:{selectedProject: Project | null, setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>},
+   chosenProjectObject:{chosenProject: Project | null, setChosenProject: React.Dispatch<React.SetStateAction<Project | null>>},
    openConfirmModelObject: {openConfirmModel: boolean, setOpenConfirmModel: React.Dispatch<React.SetStateAction<boolean>>},
    sortingOptionObject: {sortingOptions: SortingOption[], setSortingOptions: React.Dispatch<React.SetStateAction<SortingOption[]>>}
+   tabOptionObject: { tabsOptions:TabOption[] , setTabsOptions: React.Dispatch<React.SetStateAction<TabOption[]>>}
 }

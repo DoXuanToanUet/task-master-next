@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import CircleIcon from '@mui/icons-material/Circle';
 import ListIcon from '@mui/icons-material/List';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -6,7 +6,19 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import CachedIcon from '@mui/icons-material/Cached';
 import Checbox from '@mui/material/Checkbox';
 import Checkbox from '@mui/material/Checkbox';
+import { useContextApp } from '../../contextApp';
+import { count } from 'console';
 const TaskList = () => {
+   const {  
+     
+      allProjectsObject: { allProjects, setAllProjects},
+      chosenProjectObject: { chosenProject, setChosenProject },
+      tabOptionObject: { tabsOptions , setTabsOptions}
+      
+    } = useContextApp()
+    useEffect( ()=>{
+      const extractAllTasks = allProjects.flatMap( (project) => project.tasks )   } )
+      // setAll
   return (
     <div className='ml-12 mt-11 flex-col flex gap-4'> 
          <Tabs />
@@ -22,16 +34,63 @@ const TaskList = () => {
 export default TaskList
 
 function Tabs(){
+   const {  
+     
+      allProjectsObject: { allProjects, setAllProjects},
+      chosenProjectObject: { chosenProject, setChosenProject },
+      tabOptionObject: { tabsOptions , setTabsOptions}
+      
+    } = useContextApp()
+
+    function countOnGoingTasks() {
+      if (chosenProject) {
+        return chosenProject.tasks.reduce(
+          (accTask, task) => accTask + (task.status === "In Progress" ? 1 : 0),
+          0 // Giá trị khởi tạo cho accumulator
+        );
+      }
+      return allProjects.reduce( (accProject,project) =>{
+         return accProject + project.tasks.reduce( (accTasks, task) => { return accTasks + (task.status === "In Progress" ? 1 : 0)},0 )
+      },0 ); // Trả về 0 nếu không có dự án được chọn
+    }
+
+    function completedTasks(){
+      if(chosenProject){
+         return chosenProject.tasks.length - countOnGoingTasks()
+      }
+      
+      const totalTasksAllProject = allProjects.reduce( (acc, project) =>{
+         return acc + project.tasks.length
+      },0 )
+      return totalTasksAllProject  - countOnGoingTasks()
+    }
+    function switchTabs(index: number){
+      setTabsOptions( (preState) =>
+         preState.map( (tab,i)=>({
+            ...tab,
+            isSelected: index === i
+         }) )
+      )
+    }
    return (
       <div className="flex items-center gap-6 ml-3 mt-8 mb-5">
-         <div className="flex gap-2 text-orange-400 font-semibold">
-            <span>On Going Tasks</span>
-            <span className='bg-orange-600 text-white px-2 rounded-md'>7</span>
+         {tabsOptions.map( (singletTab, index)=>(
+            <div 
+            key={index}
+            onClick={()=>switchTabs(index)}
+            className={`flex gap-2 cursor-pointer ${singletTab.isSelected ? 'text-orange-600 font-semibold': 'text-slate-300'}`}
+            >
+               <span>{singletTab.name}</span>
+               <span className='bg-orange-600 text-white px-2 rounded-md'>{singletTab.id === 1 ? countOnGoingTasks() : completedTasks() }</span>
+            </div>
+         ) )}
+         {/* <div className="flex gap-2 text-orange-400 font-semibold">
+            
          </div>
          <div className="text-slate-400 flex gap-2 items-center">
             <span>Completed Tasks</span>
-            <span className='bg-slate-200 px-2 rounded-md'>8</span>
-         </div>
+            <span className='bg-slate-200 px-2 rounded-md'> {completedTasks()} </span>
+         </div> */}
       </div>
    )
 }
